@@ -2,8 +2,6 @@ require("util")
 require("constants")
 local Constants = Constants
 
-local F = "__Factorissimo2__";
-
 local function cwc0()
 	return {shadow = {red = {0,0},green = {0,0}}, wire = {red = {0,0},green = {0,0}}}
 end
@@ -181,16 +179,16 @@ end
 
 create_factory_entities({
 	name = "factory-tiny",
-	image = F.."/graphics/factory/factory-1.png",
-	combined_image = F.."/graphics/factory/factory-1-combined.png",
-	icon = F.."/graphics/icon/factory-1.png",
+	image = graphicsDir.."/factory/factory-1.png",
+	combined_image = graphicsDir.."/factory/factory-1-combined.png",
+	icon = graphicsDir.."/icon/factory-1.png",
 	max_health = 1000,
 	collision_size = 3.6,
 	order = "a-a",
 	
 	picture = {
 		sheet = {
-			filename = F.."/graphics/factory/factory-1-combined.png",
+			filename = graphicsDir.."/factory/factory-1-combined.png",
 			frames = 1,
 			width = 416,
 			height = 320,
@@ -204,16 +202,16 @@ create_factory_entities({
 })
 create_factory_entities({
 	name = "factory-1",
-	image = F.."/graphics/factory/factory-1.png",
-	combined_image = F.."/graphics/factory/factory-1-combined.png",
-	icon = F.."/graphics/icon/factory-1.png",
+	image = graphicsDir.."/factory/factory-1.png",
+	combined_image = graphicsDir.."/factory/factory-1-combined.png",
+	icon = graphicsDir.."/icon/factory-1.png",
 	max_health = 2000,
 	collision_size = 7.6,
 	order = "a-a",
 	
 	picture = {
 		sheet = {
-			filename = F.."/graphics/factory/factory-1-combined.png",
+			filename = graphicsDir.."/factory/factory-1-combined.png",
 			frames = 1,
 			width = 416,
 			height = 320,
@@ -227,16 +225,16 @@ create_factory_entities({
 })
 create_factory_entities({
 	name = "factory-2",
-	image = F.."/graphics/factory/factory-2.png",
-	combined_image = F.."/graphics/factory/factory-2-combined.png",
-	icon = F.."/graphics/icon/factory-2.png",
+	image = graphicsDir.."/factory/factory-2.png",
+	combined_image = graphicsDir.."/factory/factory-2-combined.png",
+	icon = graphicsDir.."/icon/factory-2.png",
 	max_health = 3500,
 	collision_size = 11.6,
 	order = "a-b",
 	
 	picture = {
 		sheet = {
-			filename = F.."/graphics/factory/factory-2-combined.png",
+			filename = graphicsDir.."/factory/factory-2-combined.png",
 			frames = 1,
 			width = 544,
 			height = 448,
@@ -250,16 +248,16 @@ create_factory_entities({
 })
 create_factory_entities({
 	name = "factory-3",
-	image = F.."/graphics/factory/factory-3.png",
-	combined_image = F.."/graphics/factory/factory-3-combined.png",
-	icon = F.."/graphics/icon/factory-3.png",
+	image = graphicsDir.."/factory/factory-3.png",
+	combined_image = graphicsDir.."/factory/factory-3-combined.png",
+	icon = graphicsDir.."/icon/factory-3.png",
 	max_health = 5000,
 	collision_size = 15.6,
 	order = "a-c",
 	
 	picture = {
 		sheet = {
-			filename = F.."/graphics/factory/factory-3-combined.png",
+			filename = graphicsDir.."/factory/factory-3-combined.png",
 			frames = 1,
 			width = 704,
 			height = 608,

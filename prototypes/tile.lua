@@ -1,4 +1,3 @@
-local F = "__Factorissimo2__"
 
 local function make_tile(tinfo)
 	data:extend({
@@ -10,11 +9,11 @@ local function make_tile(tinfo)
 			layer = tinfo.layer or 50,
 			variants = {
 				main = tinfo.pictures,
-				inner_corner = { picture = F.."/graphics/nothing.png", count = 0 },
-				outer_corner = { picture = F.."/graphics/nothing.png", count = 0 },
-				side = { picture = F.."/graphics/nothing.png", count = 0 },
-				u_transition = { picture = F.."/graphics/nothing.png", count = 0 },
-				o_transition = { picture = F.."/graphics/nothing.png", count = 0 },
+				inner_corner = { picture = graphicsDir.."/nothing.png", count = 0 },
+				outer_corner = { picture = graphicsDir.."/nothing.png", count = 0 },
+				side = { picture = graphicsDir.."/nothing.png", count = 0 },
+				u_transition = { picture = graphicsDir.."/nothing.png", count = 0 },
+				o_transition = { picture = graphicsDir.."/nothing.png", count = 0 },
 			},
 			walking_speed_modifier = 1.3,
 			walking_sound = {
@@ -87,18 +86,18 @@ local function pictures_ff(i)
 	-- Looks kinda ugly though with the current hues
 	return {
 		{
-			picture = F.."/graphics/tile/ff"..x.."_1.png",
+			picture = graphicsDir.."/tile/ff"..x.."_1.png",
 			count = 16,
 			size = 1
 		},
 		{
-			picture = F.."/graphics/tile/ff"..x.."_2.png",
+			picture = graphicsDir.."/tile/ff"..x.."_2.png",
 			count = 4,
 			size = 2,
 			probability = 0.39,
 		},
 		{
-			picture = F.."/graphics/tile/ff"..x.."_4.png",
+			picture = graphicsDir.."/tile/ff"..x.."_4.png",
 			count = 4,
 			size = 4,
 			probability = 1,
@@ -109,7 +108,7 @@ end
 local function pictures_fp(i)
 	return {
 		{
-			picture = F.."/graphics/tile/fw"..i.."_1.png",
+			picture = graphicsDir.."/tile/fw"..i.."_1.png",
 			count = 16,
 			size = 1
 		},
@@ -119,7 +118,7 @@ end
 local function pictures_fw(i)
 	return {
 		{
-			picture = F.."/graphics/tile/fw"..i.."_1.png",
+			picture = graphicsDir.."/tile/fw"..i.."_1.png",
 			count = 16,
 			size = 1
 		},

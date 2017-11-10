@@ -1,6 +1,5 @@
 require("util")
 require("constants")
-local F = "__Factorissimo2__";
 
 local function cwc0()
 	return {shadow = {red = {0,0},green = {0,0}}, wire = {red = {0,0},green = {0,0}}}
@@ -14,7 +13,7 @@ end
 
 local function ps()
 	return {
-		filename = F.."/graphics/component/pipe-connection-south.png",
+		filename = graphicsDir.."/component/pipe-connection-south.png",
 		priority = "extra-high",
 		width = 44,
 		height = 32
@@ -175,10 +174,10 @@ make_energy_interfaces(2,true,true,"__base__/graphics/icons/substation.png")
 -- true,false would be optimal, but due to a bug it doesn't work. Maybe it'll be fixed.
 -- In the meantime we'll have to settle for true,true because that's how Factorissimo1 worked.
 
-make_energy_interfaces(4,false,false,F.."/graphics/icon/factory-1.png")
-make_energy_interfaces(8,false,false,F.."/graphics/icon/factory-1.png")
-make_energy_interfaces(12,false,false,F.."/graphics/icon/factory-2.png")
-make_energy_interfaces(16,false,false,F.."/graphics/icon/factory-3.png")
+make_energy_interfaces(4, false,false,graphicsDir.."/icon/factory-1.png")
+make_energy_interfaces(8, false,false,graphicsDir.."/icon/factory-1.png")
+make_energy_interfaces(12,false,false,graphicsDir.."/icon/factory-2.png")
+make_energy_interfaces(16,false,false,graphicsDir.."/icon/factory-3.png")
 
 -- Connection indicators
 
@@ -203,7 +202,7 @@ local function create_indicator(ctype, suffix, image)
 			pictures = {
 				picture = {
 					sheet = {
-						filename = F.."/graphics/indicator/" .. image .. ".png",
+						filename = graphicsDir.."/indicator/" .. image .. ".png",
 						priority = "extra-high",
 						frames = 4,
 						width = 32,
@@ -386,7 +385,7 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "factory-overlay-display-1",
-		icon = F.."/graphics/icon/blank-icon.png",
+		icon = graphicsDir.."/icon/blank-icon.png",
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(blank()),
@@ -435,7 +434,7 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "factory-overlay-display-2",
-		icon = F.."/graphics/icon/blank-icon.png",
+		icon = graphicsDir.."/icon/blank-icon.png",
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(blank()),

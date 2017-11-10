@@ -1,5 +1,4 @@
 require("util")
-local F = "__Factorissimo2__"
 
 -- Pipe connectors
 
@@ -8,7 +7,7 @@ local function factory_pipe(name, height, order)
 		{
 			type = "item",
 			name = name,
-			icon = F.."/graphics/icon/"..name..".png",
+			icon = graphicsDir.."/icon/"..name..".png",
 			flags = {"goes-to-quickbar"},
 			subgroup = "factorissimo2",
 			order = order,
@@ -18,7 +17,7 @@ local function factory_pipe(name, height, order)
 		{
 			type = "storage-tank",
 			name = name,
-			icon = F.."/graphics/icon/"..name..".png",
+			icon = graphicsDir.."/icon/"..name..".png",
 			flags = {"placeable-player", "player-creation"},
 			minable = {mining_time = 1, result = name},
 			max_health = 80,
@@ -39,7 +38,7 @@ local function factory_pipe(name, height, order)
 			pictures = {
 				picture = {
 					sheet = {
-						filename = F.."/graphics/utility/"..name..".png",
+						filename = graphicsDir.."/utility/"..name..".png",
 						priority = "extra-high",
 						frames = 2,
 						width = 50,
@@ -146,7 +145,7 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-circuit-input",
-		icon = F.."/graphics/icon/factory-circuit-input.png",
+		icon = graphicsDir.."/icon/factory-circuit-input.png",
 		flags = {"goes-to-quickbar"},
 		subgroup = "factorissimo2",
 		order = "c-a",
@@ -156,7 +155,7 @@ data:extend({
 	{
 		type = "pump",
 		name = "factory-circuit-input",
-		icon = F.."/graphics/icon/factory-circuit-input.png",
+		icon = graphicsDir.."/icon/factory-circuit-input.png",
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 1, result = "factory-circuit-input"},
 		max_health = 80,
@@ -183,7 +182,7 @@ data:extend({
 		vehicle_impact_sound = { filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
 		animations = {
 			north = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				x = 158,
 				y = 0,
 				width = 79,
@@ -192,7 +191,7 @@ data:extend({
 				shift = {0.140625, 0.140625},
 			},
 			east = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				y = 0,
 				width = 79,
 				height = 63,
@@ -200,7 +199,7 @@ data:extend({
 				shift = {0.140625, 0.140625},
 			},
 			south = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				x = 237,
 				y = 0,
 				width = 79,
@@ -209,7 +208,7 @@ data:extend({
 				shift = {0.140625, 0.140625},
 			},
 			west = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				x = 79,
 				y = 0,
 				width = 79,
@@ -272,7 +271,7 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-circuit-output",
-		icon = F.."/graphics/icon/factory-circuit-output.png",
+		icon = graphicsDir.."/icon/factory-circuit-output.png",
 		flags = {"goes-to-quickbar"},
 		subgroup = "factorissimo2",
 		order = "c-b",
@@ -282,7 +281,7 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "factory-circuit-output",
-		icon = F.."/graphics/icon/factory-circuit-output.png",
+		icon = graphicsDir.."/icon/factory-circuit-output.png",
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "factory-circuit-output"},
 		max_health = 50,
@@ -295,7 +294,7 @@ data:extend({
 
 		sprites = {
 			north = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				x = 158,
 				y = 63,
 				width = 79,
@@ -304,7 +303,7 @@ data:extend({
 				shift = {0.140625, 0.140625},
 			},
 			east = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				y = 63,
 				width = 79,
 				height = 63,
@@ -312,7 +311,7 @@ data:extend({
 				shift = {0.140625, 0.140625},
 			},
 			south = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				x = 237,
 				y = 63,
 				width = 79,
@@ -321,7 +320,7 @@ data:extend({
 				shift = {0.140625, 0.140625},
 			},
 			west = {
-				filename = F.."/graphics/utility/factory-combinators.png",
+				filename = graphicsDir.."/utility/factory-combinators.png",
 				x = 79,
 				y = 63,
 				width = 79,
@@ -423,7 +422,7 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-requester-chest",
-		icon = F.."/graphics/icon/factory-requester-chest.png",
+		icon = graphicsDir.."/icon/factory-requester-chest.png",
 		flags = {"goes-to-quickbar"},
 		subgroup = "factorissimo2",
 		order = "d-a",
@@ -433,7 +432,7 @@ data:extend({
 	{
 		type = "logistic-container",
 		name = "factory-requester-chest",
-		icon = F.."/graphics/icon/factory-requester-chest.png",
+		icon = graphicsDir.."/icon/factory-requester-chest.png",
 		flags = {"placeable-player", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "factory-requester-chest"},
 		max_health = 450,
@@ -447,7 +446,7 @@ data:extend({
 		vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
 		picture =
 		{
-			filename = F.."/graphics/utility/factory-requester-chest.png",
+			filename = graphicsDir.."/utility/factory-requester-chest.png",
 			priority = "extra-high",
 			width = 38,
 			height = 32,
@@ -480,7 +479,7 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-bounds-marker",
-		icon = F.."/graphics/indicator/blue-dot.png",
+		icon = graphicsDir.."/indicator/blue-dot.png",
 		flags = {},
 		subgroup = "factorissimo2",
 		order = "a-a",
@@ -491,7 +490,7 @@ data:extend({
 		type = "container",
 			inventory_size=0,
 		name = "factory-bounds-marker",
-		icon = F.."/graphics/indicator/blue-dot.png",
+		icon = graphicsDir.."/indicator/blue-dot.png",
 		flags = {"placeable-player", "player-creation"},
 		max_health = 100,
 		collision_box = centered_square(0.7),
@@ -499,7 +498,7 @@ data:extend({
 		collision_mask = {},
 		picture = {
 			-- Placeholder
-			filename = F.."/graphics/indicator/blue-dot.png",
+			filename = graphicsDir.."/indicator/blue-dot.png",
 			priority = "extra-high",
 			width = 32,
 			height = 32,
@@ -518,7 +517,7 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-contents-marker",
-		icon = F.."/graphics/icon/factory-requester-chest.png",
+		icon = graphicsDir.."/icon/factory-requester-chest.png",
 		flags = {},
 		subgroup = "factorissimo2",
 		order = "a-a",
@@ -528,7 +527,7 @@ data:extend({
 	{
 		type = "programmable-speaker",
 		name = "factory-contents-marker",
-		icon = F.."/graphics/icon/factory-requester-chest.png",
+		icon = graphicsDir.."/icon/factory-requester-chest.png",
 		max_health = 1000,
 		flags = {"placeable-player", "player-creation"},
 		collision_mask = {},
@@ -555,7 +554,7 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-construction-requester-chest",
-		icon = F.."/graphics/icon/factory-requester-chest.png",
+		icon = graphicsDir.."/icon/factory-requester-chest.png",
 		flags = {"goes-to-quickbar"},
 		subgroup = "factorissimo2",
 		order = "d-a",
@@ -565,7 +564,7 @@ data:extend({
 	{
 		type = "logistic-container",
 		name = "factory-construction-requester-chest",
-		icon = F.."/graphics/icon/factory-requester-chest.png",
+		icon = graphicsDir.."/icon/factory-requester-chest.png",
 		flags = {"placeable-player", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "factory-construction-requester-chest"},
 		max_health = 450,
@@ -579,7 +578,7 @@ data:extend({
 		vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
 		picture =
 		{
-			filename = F.."/graphics/utility/factory-requester-chest.png",
+			filename = graphicsDir.."/utility/factory-requester-chest.png",
 			priority = "extra-high",
 			width = 38,
 			height = 32,

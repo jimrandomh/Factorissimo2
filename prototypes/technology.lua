@@ -1,4 +1,4 @@
-local F = "__Factorissimo2__"
+require("util")
 local pf = "p-q-"
 local easy_research = settings.startup["Factorissimo2-easy-research"].value
 
@@ -8,7 +8,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-architecture-t1",
-		icon = F.."/graphics/technology/factory-architecture-1.png",
+		icon = graphicsDir.."/technology/factory-architecture-1.png",
 		icon_size = 128,
 		prerequisites = {"stone-walls", "logistics"},
 		effects = {
@@ -25,7 +25,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-architecture-t2",
-		icon = F.."/graphics/technology/factory-architecture-2.png",
+		icon = graphicsDir.."/technology/factory-architecture-2.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1", "steel-processing", "electric-energy-distribution-1"},
 		effects = {
@@ -44,7 +44,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-architecture-t3",
-		icon = F.."/graphics/technology/factory-architecture-3.png",
+		icon = graphicsDir.."/technology/factory-architecture-3.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t2", "concrete", "electric-energy-distribution-2"},
 		effects = {
@@ -65,7 +65,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-connection-type-fluid",
-		icon = F.."/graphics/technology/factory-connection-type-fluid.png",
+		icon = graphicsDir.."/technology/factory-connection-type-fluid.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1"}, -- "fluid-handling"
 		effects = {
@@ -82,7 +82,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-connection-type-chest",
-		icon = F.."/graphics/technology/factory-connection-type-chest.png",
+		icon = graphicsDir.."/technology/factory-connection-type-chest.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1", "logistics-2"},
 		effects = {},
@@ -96,7 +96,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-connection-type-circuit",
-		icon = F.."/graphics/technology/factory-connection-type-circuit.png",
+		icon = graphicsDir.."/technology/factory-connection-type-circuit.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1", "circuit-network"},
 		effects = {
@@ -116,7 +116,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-interior-upgrade-lights",
-		icon = F.."/graphics/technology/factory-interior-upgrade-lights.png",
+		icon = graphicsDir.."/technology/factory-interior-upgrade-lights.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1", "optics"},
 		effects = {},
@@ -130,7 +130,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-interior-upgrade-display",
-		icon = F.."/graphics/technology/factory-interior-upgrade-display.png",
+		icon = graphicsDir.."/technology/factory-interior-upgrade-display.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1", "optics"},
 		effects = {},
@@ -146,7 +146,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-preview",
-		icon = F.."/graphics/technology/factory-preview.png",
+		icon = graphicsDir.."/technology/factory-preview.png",
 		icon_size = 128,
 		prerequisites = {"factory-interior-upgrade-lights"},
 		effects = {},
@@ -160,7 +160,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-requester-chest",
-		icon = F.."/graphics/technology/factory-requester-chest.png",
+		icon = graphicsDir.."/technology/factory-requester-chest.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t1", "logistic-system"},
 		effects = {
@@ -176,7 +176,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-robotic-construction",
-		icon = F.."/graphics/technology/factory-requester-chest.png",
+		icon = graphicsDir.."/technology/factory-requester-chest.png",
 		icon_size = 128,
 		-- prerequisites = {"factory-architecture-t1", "construction-robotics"},
 		prerequisites = {"factory-architecture-t1"},
@@ -196,7 +196,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-recursion-t1",
-		icon = F.."/graphics/technology/factory-recursion-1.png",
+		icon = graphicsDir.."/technology/factory-recursion-1.png",
 		icon_size = 128,
 		prerequisites = {"factory-architecture-t2", "logistics-2"},
 		effects = {},
@@ -210,7 +210,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "factory-recursion-t2",
-		icon = F.."/graphics/technology/factory-recursion-2.png",
+		icon = graphicsDir.."/technology/factory-recursion-2.png",
 		icon_size = 128,
 		prerequisites = {"factory-recursion-t1", "factory-architecture-t3"},
 		effects = {},

@@ -12,6 +12,7 @@ data:extend({
 		icon_size = 128,
 		prerequisites = {"stone-walls", "logistics"},
 		effects = {
+			{type = "unlock-recipe", recipe = "factory-tiny"},
 			{type = "unlock-recipe", recipe = "factory-1"},
 		},
 		unit = {

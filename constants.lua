@@ -5,7 +5,7 @@ Constants = {
 	factory_id_min = 10,
 	factory_id_max = 99,
 	
-	factory_type_names = {"factory-1", "factory-2", "factory-3"},
+	factory_type_names = {"factory-tiny","factory-1", "factory-2", "factory-3"},
 	
 	overlay_slot_count = 4,
 }

@@ -67,6 +67,75 @@ local function factory_layout_base(properties)
 end
 
 local layout_generators = {
+	["factory-tiny"] = function()
+		return factory_layout_base({
+			name = "factory-tiny",
+			tier = 0,
+			inside_size = 16,
+			outside_size = 4,
+			default_power_transfer_rate = 10,
+			inside_energy_x = -2,
+			inside_energy_y = 9,
+			energy_indicator_x = -1.5,
+			energy_indicator_y = 10.5,
+			rectangles = {
+				{
+					x1 = -10, x2 = 10, y1 = -10, y2 = 10, tile = "out-of-factory"
+				},
+				{
+					x1 = -9, x2 = 9, y1 = -9, y2 = 9, tile = "factory-wall-1"
+				},
+				{
+					x1 = -8, x2 = 8, y1 = -8, y2 = 8, tile = "factory-floor-1"
+				},
+				{
+					x1 = -2, x2 = 2, y1 = 9, y2 = 10, tile = "factory-wall-1"
+				},
+				{
+					x1 = -1, x2 = 1, y1 = 8, y2 = 11, tile = "factory-entrance-1"
+				},
+			},
+			mosaics = {
+				{	x1 = -6, x2 = 6, y1 = -4, y2 = 4, tile = "factory-pattern-1",
+					pattern = {
+						"    ++++    ",
+						"   ++  ++   ",
+						"   +    +   ",
+						"   +    +   ",
+						"   +    +   ",
+						"   +    +   ",
+						"   ++  ++   ",
+						"    ++++    ",
+					}
+				},
+			},
+			lights = {{0,0}},
+			lights = grid_of({0}, {0}),
+			connection_tile = "factory-floor-1",
+			connections = {
+				w1 = make_connection("w1", -2.5,-0.5, -8.5,-3.5, west,  "n2"),
+				w2 = make_connection("w2", -2.5, 0.5, -8.5, 3.5, west,  "n1"),
+				
+				e1 = make_connection("e1",  2.5,-0.5,  8.5,-3.5, east,  "s2"),
+				e2 = make_connection("e2",  2.5, 0.5,  8.5, 3.5, east,  "s1"),
+				
+				n1 = make_connection("n1", -0.5,-2.5, -3.5,-8.5, north, "e1"),
+				n2 = make_connection("n2",  0.5,-2.5,  3.5,-8.5, north, "e2"),
+				
+				s1 = make_connection("s1", -0.5, 2.5, -3.5, 8.5, south, "w1"),
+				s2 = make_connection("s2",  0.5, 2.5,  3.5, 8.5, south, "w2"),
+			},
+			overlays = {
+				center = {
+					outside_x = 0,
+					outside_y = 0,
+					inside_x = 2.5,
+					inside_y = 8.5,
+					outside_size = 2,
+				},
+			},
+		})
+	end,
 	["factory-1"] = function()
 		return factory_layout_base({
 			name = "factory-1",

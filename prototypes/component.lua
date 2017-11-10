@@ -175,6 +175,7 @@ make_energy_interfaces(2,true,true,"__base__/graphics/icons/substation.png")
 -- true,false would be optimal, but due to a bug it doesn't work. Maybe it'll be fixed.
 -- In the meantime we'll have to settle for true,true because that's how Factorissimo1 worked.
 
+make_energy_interfaces(4,false,false,F.."/graphics/icon/factory-1.png")
 make_energy_interfaces(8,false,false,F.."/graphics/icon/factory-1.png")
 make_energy_interfaces(12,false,false,F.."/graphics/icon/factory-2.png")
 make_energy_interfaces(16,false,false,F.."/graphics/icon/factory-3.png")

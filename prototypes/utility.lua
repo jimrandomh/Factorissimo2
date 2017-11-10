@@ -531,7 +531,7 @@ data:extend({
 		icon = F.."/graphics/icon/factory-requester-chest.png",
 		max_health = 1000,
 		flags = {"placeable-player", "player-creation"},
-		collision_box = centered_square(0.7),
+		collision_mask = {},
 		selection_box = centered_square(1.0),
 		energy_source = {
 			type = "electric",
@@ -541,21 +541,10 @@ data:extend({
 			render_no_network_icon = false,
 		},
 		energy_usage_per_tick = "0W",
-		sprite = {
-			filename = F.."/graphics/utility/factory-requester-chest.png",
-			width = 38,
-			height = 32,
-			shift = {0.09375, 0}
-		},
+		sprite = blank(),
 		maximum_polyphony = 0,
 		instruments = {},
-		picture = {
-			filename = F.."/graphics/utility/factory-requester-chest.png",
-			priority = "extra-high",
-			width = 38,
-			height = 32,
-			shift = {0.09375, 0}
-		},
+		picture = blank(),
 	}
 })
 

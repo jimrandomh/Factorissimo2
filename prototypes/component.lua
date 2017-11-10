@@ -369,7 +369,7 @@ data:extend({
 		name = "factory-overlay-display-1-item",
 		icon = "__core__/graphics/entity-info-dark-background.png",
 		flags = {"hidden"},
-		subgroup = "factorissimo2",
+		subgroup = "microfactorio",
 		place_result = "blueprint-factory-overlay-display-1",
 		stack_size = 10
 	},
@@ -378,7 +378,7 @@ data:extend({
 		name = "factory-overlay-display-2-item",
 		icon = "__core__/graphics/entity-info-dark-background.png",
 		flags = {"hidden"},
-		subgroup = "factorissimo2",
+		subgroup = "microfactorio",
 		place_result = "blueprint-factory-overlay-display-2",
 		stack_size = 10
 	},

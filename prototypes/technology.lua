@@ -1,6 +1,6 @@
 require("util")
 local pf = "p-q-"
-local easy_research = settings.startup["Factorissimo2-easy-research"].value
+local easy_research = settings.startup["microfactorio-easy-research"].value
 
 
 data:extend({

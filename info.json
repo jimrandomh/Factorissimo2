@@ -1,9 +1,9 @@
 {
-  "name": "Factorissimo2",
-  "version": "2.2.0",
-  "title": "Factorissimo2",
-  "author": "MagmaMcFry",
-  "description": "The official, improved rewrite of Factorissimo. Place down factory buildings, walk in, build your factories inside!",
+  "name": "Microfactorio",
+  "version": "1.0.0",
+  "title": "Microfactorio",
+  "author": "jimrandomh",
+  "description": "Place factory buildings, walk inside them, then copy those buildings with blueprints and paste-settings to make a dense, modular and rearrangeable factory. Based on Factorissimo2 by MagmaMcFry.",
   "factorio_version": "0.15",
   "dependencies": ["base >= 0.15.13"]
 }

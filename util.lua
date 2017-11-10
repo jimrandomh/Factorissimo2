@@ -1,4 +1,4 @@
-graphicsDir = "__Factorissimo2__/graphics"
+graphicsDir = "__Microfactorio__/graphics"
 
 function centered_square(size)
 	local r = size/2

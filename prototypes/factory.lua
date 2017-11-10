@@ -60,7 +60,7 @@ function factory_item_base(params)
 	return {
 		name = name,
 		type = "item",
-		subgroup = "factorissimo2",
+		subgroup = "microfactorio",
 		icon = params.icon,
 		order = params.order,
 		flags = item_flags,
@@ -120,7 +120,7 @@ function create_factory_entities(params)
 		name = params.name .. "-blueprint",
 		icon = params.icon,
 		flags = {},
-		subgroup = "factorissimo2",
+		subgroup = "microfactorio",
 		order = "a-a",
 		place_result = params.name .. "-blueprint",
 		stack_size = 1,

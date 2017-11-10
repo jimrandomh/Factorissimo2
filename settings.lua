@@ -3,7 +3,7 @@ data:extend({
 
 	{
 		type = "bool-setting",
-		name = "Factorissimo2-easy-research",
+		name = "microfactorio-easy-research",
 		setting_type = "startup",
 		default_value = false,
 		order = "a"
@@ -13,14 +13,14 @@ data:extend({
 
 	{
 		type = "bool-setting",
-		name = "Factorissimo2-free-recursion",
+		name = "microfactorio-free-recursion",
 		setting_type = "runtime-global",
 		default_value = false,
 		order = "a-a",
 	},
 	{
 		type = "bool-setting",
-		name = "Factorissimo2-hide-recursion",
+		name = "microfactorio-hide-recursion",
 		setting_type = "runtime-global",
 		default_value = false,
 		order = "a-b",
@@ -30,14 +30,14 @@ data:extend({
 
 	{
 		type = "bool-setting",
-		name = "Factorissimo2-preview-enabled",
+		name = "microfactorio-preview-enabled",
 		setting_type = "runtime-per-user",
 		default_value = true,
 		order = "a-a",
 	},
 	{
 		type = "int-setting",
-		name = "Factorissimo2-preview-size",
+		name = "microfactorio-preview-size",
 		setting_type = "runtime-per-user",
 		minimum_value = 50,
 		default_value = 300,
@@ -46,7 +46,7 @@ data:extend({
 	},
 	{
 		type = "double-setting",
-		name = "Factorissimo2-preview-zoom",
+		name = "microfactorio-preview-zoom",
 		setting_type = "runtime-per-user",
 		minimum_value = 0.2,
 		default_value = 1,

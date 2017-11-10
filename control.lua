@@ -355,7 +355,7 @@ local function create_factory_position()
 			surface_name = "Factory floor 1"
 			surface = game.surfaces[surface_name]
 			if surface == nil then
-				error("Unfortunately you have no available surfaces left for Factorissimo2. You cannot use Factorissimo2 on this map.")
+				error("Unfortunately you have no available surfaces left for Microfactorio. You cannot use Microfactorio on this map.")
 			end
 		end
 	end
@@ -1014,8 +1014,8 @@ local function can_place_factory_here(tier, surface, position)
 	local factory = find_surrounding_factory(surface, position)
 	if not factory then return true end
 	local outer_tier = factory.layout.tier
-	if outer_tier > tier and (factory.force.technologies["factory-recursion-t1"].researched or settings.global["Factorissimo2-free-recursion"].value) then return true end
-	if outer_tier >= tier and (factory.force.technologies["factory-recursion-t2"].researched or settings.global["Factorissimo2-free-recursion"].value) then return true end
+	if outer_tier > tier and (factory.force.technologies["factory-recursion-t1"].researched or settings.global["Microfactorio-free-recursion"].value) then return true end
+	if outer_tier >= tier and (factory.force.technologies["factory-recursion-t2"].researched or settings.global["Microfactorio-free-recursion"].value) then return true end
 	if outer_tier > tier then
 		surface.create_entity{name="flying-text", position=position, text={"factory-connection-text.invalid-placement-recursion-1"}}
 	elseif outer_tier >= tier then
@@ -2030,12 +2030,12 @@ local function set_camera(player, factory, inside)
 	if not player.force.technologies["factory-preview"].researched then return end
 
 	local ps = settings.get_player_settings(player)
-	local ps_preview_enabled = ps["Factorissimo2-preview-enabled"]
+	local ps_preview_enabled = ps["Microfactorio-preview-enabled"]
 	if ps_preview_enabled and not ps_preview_enabled.value then return end
 
-	local ps_preview_size = ps["Factorissimo2-preview-size"]
+	local ps_preview_size = ps["Microfactorio-preview-size"]
 	local preview_size = ps_preview_size and ps_preview_size.value or 300
-	local ps_preview_zoom = ps["Factorissimo2-preview-zoom"]
+	local ps_preview_zoom = ps["Microfactorio-preview-zoom"]
 	local preview_zoom = ps_preview_zoom and ps_preview_zoom.value or 1
 	local position, surface_index, zoom
 	if not inside then
@@ -2324,8 +2324,8 @@ end)
 
 script.on_event(defines.events.on_runtime_mod_setting_changed, function(event)
 	local setting = event.setting
-	if setting == "Factorissimo2-hide-recursion" then
-		if settings.global["Factorissimo2-hide-recursion"] and settings.global["Factorissimo2-hide-recursion"].value then
+	if setting == "Microfactorio-hide-recursion" then
+		if settings.global["Microfactorio-hide-recursion"] and settings.global["Microfactorio-hide-recursion"].value then
 			for _, force in pairs(game.forces) do
 				force.technologies["factory-recursion-t1"].enabled = false
 				force.technologies["factory-recursion-t2"].enabled = false

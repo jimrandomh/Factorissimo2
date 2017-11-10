@@ -10,7 +10,7 @@ data:extend({
 
 	{
 		type = "item-subgroup",
-		name = "factorissimo2",
+		name = "microfactorio",
 		group = "logistics",
 		order = "e-e"
 	},

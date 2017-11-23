@@ -179,16 +179,16 @@ end
 
 create_factory_entities({
 	name = "factory-tiny",
-	image = graphicsDir.."/factory/factory-1.png",
-	combined_image = graphicsDir.."/factory/factory-1-combined.png",
-	icon = graphicsDir.."/icon/factory-1.png",
+	image = graphicsDir.."/factory/factory-tiny.png",
+	combined_image = graphicsDir.."/factory/factory-tiny-combined.png",
+	icon = graphicsDir.."/icon/factory-tiny.png",
 	max_health = 1000,
 	collision_size = 3.6,
 	order = "a-a",
 	
 	picture = {
 		sheet = {
-			filename = graphicsDir.."/factory/factory-1-combined.png",
+			filename = graphicsDir.."/factory/factory-tiny-combined.png",
 			frames = 1,
 			width = 416,
 			height = 320,

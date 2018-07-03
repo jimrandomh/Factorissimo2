@@ -8,6 +8,7 @@ local function factory_pipe(name, height, order)
 			type = "item",
 			name = name,
 			icon = graphicsDir.."/icon/"..name..".png",
+			icon_size = 32,
 			flags = {"goes-to-quickbar"},
 			subgroup = "microfactorio",
 			order = order,
@@ -18,6 +19,7 @@ local function factory_pipe(name, height, order)
 			type = "storage-tank",
 			name = name,
 			icon = graphicsDir.."/icon/"..name..".png",
+			icon_size = 32,
 			flags = {"placeable-player", "player-creation"},
 			minable = {mining_time = 1, result = name},
 			max_health = 80,
@@ -82,55 +84,8 @@ local function factory_pipe(name, height, order)
 				apparent_volume = 0.1,
 				max_sounds_per_type = 3
 			},
-			circuit_wire_connection_points = {
-				{
-					shadow = {
-						red = {0.171875, 0.140625},
-						green = {0.171875, 0.265625},
-					},
-					wire = {
-						red = {-0.53125, -0.15625},
-						green = {-0.53125, 0},
-					}
-				},
-				{
-					shadow = {
-						red = {0.890625, 0.703125},
-						green = {0.75, 0.75},
-					},
-					wire = {
-						red = {0.34375, 0.28125},
-						green = {0.34375, 0.4375},
-					}
-				},
-				{
-					shadow = {
-						red = {0.15625, 0.0625},
-						green = {0.09375, 0.125},
-					},
-					wire = {
-						red = {-0.53125, -0.09375},
-						green = {-0.53125, 0.03125},
-					}
-				},
-				{
-					shadow = {
-						red = {0.796875, 0.703125},
-						green = {0.625, 0.75},
-					},
-					wire = {
-						red = {0.40625, 0.28125},
-						green = {0.40625, 0.4375},
-					}
-				}
-			},
-			circuit_connector_sprites =
-			{
-				get_circuit_connector_sprites({-0.40625, -0.3125}, nil, 24),
-				get_circuit_connector_sprites({0.125, 0.21875}, {0.34375, 0.40625}, 18),
-				get_circuit_connector_sprites({-0.40625, -0.25}, nil, 24),
-				get_circuit_connector_sprites({0.203125, 0.203125}, {0.25, 0.40625}, 18),
-			},
+			circuit_connector_points = circuit_connector_definitions["storage-tank"].points,
+			circuit_connector_sprites = circuit_connector_definitions["storage-tank"].sprites,
 			circuit_wire_max_distance = 0
 		},
 	})
@@ -146,6 +101,7 @@ data:extend({
 		type = "item",
 		name = "factory-circuit-input",
 		icon = graphicsDir.."/icon/factory-circuit-input.png",
+		icon_size = 32,
 		flags = {"goes-to-quickbar"},
 		subgroup = "microfactorio",
 		order = "c-a",
@@ -156,6 +112,7 @@ data:extend({
 		type = "pump",
 		name = "factory-circuit-input",
 		icon = graphicsDir.."/icon/factory-circuit-input.png",
+		icon_size = 32,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {mining_time = 1, result = "factory-circuit-input"},
 		max_health = 80,
@@ -260,10 +217,10 @@ data:extend({
 			}
 		},
 		circuit_connector_sprites = {
-			get_circuit_connector_sprites({-0.40625, -0.3125}, nil, 24),
-			get_circuit_connector_sprites({0.125, 0.21875}, {0.34375, 0.40625}, 18),
-			get_circuit_connector_sprites({-0.40625, -0.25}, nil, 24),
-			get_circuit_connector_sprites({0.203125, 0.203125}, {0.25, 0.40625}, 18),
+			circuit_connector_definitions["chest"].sprites,
+			circuit_connector_definitions["chest"].sprites,
+			circuit_connector_definitions["chest"].sprites,
+			circuit_connector_definitions["chest"].sprites
 		},
 		circuit_wire_max_distance = 7.5
 	},
@@ -272,6 +229,7 @@ data:extend({
 		type = "item",
 		name = "factory-circuit-output",
 		icon = graphicsDir.."/icon/factory-circuit-output.png",
+		icon_size = 32,
 		flags = {"goes-to-quickbar"},
 		subgroup = "microfactorio",
 		order = "c-b",
@@ -282,6 +240,7 @@ data:extend({
 		type = "constant-combinator",
 		name = "factory-circuit-output",
 		icon = graphicsDir.."/icon/factory-circuit-output.png",
+		icon_size = 32,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "factory-circuit-output"},
 		max_health = 50,
@@ -332,28 +291,28 @@ data:extend({
 
 		activity_led_sprites = {
 			north = {
-				filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-north.png",
+				filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-N.png",
 				width = 11,
 				height = 10,
 				frame_count = 1,
 				shift = {0.296875, -0.40625},
 			},
 			east = {
-				filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-east.png",
+				filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-E.png",
 				width = 14,
 				height = 12,
 				frame_count = 1,
 				shift = {0.25, -0.03125},
 			},
 			south = {
-				filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-south.png",
+				filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-S.png",
 				width = 11,
 				height = 11,
 				frame_count = 1,
 				shift = {-0.296875, -0.078125},
 			},
 			west = {
-				filename = "__base__/graphics/entity/combinator/activity-leds/combinator-led-constant-west.png",
+				filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-W.png",
 				width = 12,
 				height = 12,
 				frame_count = 1,
@@ -423,6 +382,7 @@ data:extend({
 		type = "item",
 		name = "factory-requester-chest",
 		icon = graphicsDir.."/icon/factory-requester-chest.png",
+		icon_size = 32,
 		flags = {"goes-to-quickbar"},
 		subgroup = "microfactorio",
 		order = "d-a",
@@ -433,6 +393,7 @@ data:extend({
 		type = "logistic-container",
 		name = "factory-requester-chest",
 		icon = graphicsDir.."/icon/factory-requester-chest.png",
+		icon_size = 32,
 		flags = {"placeable-player", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "factory-requester-chest"},
 		max_health = 450,
@@ -440,6 +401,7 @@ data:extend({
 		collision_box = centered_square(0.7),
 		selection_box = centered_square(1.0),
 		inventory_size = 48,
+		logistic_slots_count = 48,
 		logistic_mode = "requester",
 		open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
 		close_sound = { filename = "__base__/sound/metallic-chest-close.ogg", volume = 0.7 },
@@ -466,7 +428,7 @@ data:extend({
 			}
 		},
 		circuit_wire_max_distance = 7.5,
-		circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
+		circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
 	},
 })
 
@@ -480,6 +442,7 @@ data:extend({
 		type = "item",
 		name = "factory-bounds-marker",
 		icon = graphicsDir.."/indicator/blue-dot.png",
+		icon_size = 32,
 		flags = {},
 		subgroup = "microfactorio",
 		order = "a-a",
@@ -488,9 +451,10 @@ data:extend({
 	},
 	{
 		type = "container",
-			inventory_size=0,
+		inventory_size=0,
 		name = "factory-bounds-marker",
 		icon = graphicsDir.."/indicator/blue-dot.png",
+		icon_size = 32,
 		flags = {"placeable-player", "player-creation"},
 		max_health = 100,
 		collision_box = centered_square(0.7),
@@ -518,6 +482,7 @@ data:extend({
 		type = "item",
 		name = "factory-contents-marker",
 		icon = graphicsDir.."/icon/factory-requester-chest.png",
+		icon_size = 32,
 		flags = {},
 		subgroup = "microfactorio",
 		order = "a-a",
@@ -528,6 +493,7 @@ data:extend({
 		type = "programmable-speaker",
 		name = "factory-contents-marker",
 		icon = graphicsDir.."/icon/factory-requester-chest.png",
+		icon_size = 32,
 		max_health = 1000,
 		flags = {"placeable-player", "player-creation"},
 		collision_mask = {},
@@ -555,6 +521,7 @@ data:extend({
 		type = "item",
 		name = "factory-construction-requester-chest",
 		icon = graphicsDir.."/icon/factory-requester-chest.png",
+		icon_size = 32,
 		flags = {"goes-to-quickbar"},
 		subgroup = "microfactorio",
 		order = "d-a",
@@ -565,6 +532,7 @@ data:extend({
 		type = "logistic-container",
 		name = "factory-construction-requester-chest",
 		icon = graphicsDir.."/icon/factory-requester-chest.png",
+		icon_size = 32,
 		flags = {"placeable-player", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "factory-construction-requester-chest"},
 		max_health = 450,
@@ -572,6 +540,7 @@ data:extend({
 		collision_box = centered_square(0.7),
 		selection_box = centered_square(1.0),
 		inventory_size = 48,
+		logistic_slots_count = 48,
 		logistic_mode = "requester",
 		open_sound = { filename = "__base__/sound/metallic-chest-open.ogg", volume=0.65 },
 		close_sound = { filename = "__base__/sound/metallic-chest-close.ogg", volume = 0.7 },
@@ -598,6 +567,6 @@ data:extend({
 			}
 		},
 		circuit_wire_max_distance = 7.5,
-		circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
+		circuit_connector_sprites = circuit_connector_definitions["chest"].sprites,
 	},
 })

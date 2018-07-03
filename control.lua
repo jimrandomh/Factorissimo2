@@ -12,6 +12,8 @@ local Updates = Updates
 
 require("constants")
 
+require("mod-gui")
+
 local BlueprintString = require("blueprintstring.blueprintstring")
 local serpent = require "blueprintstring.serpent0272"
 
@@ -83,6 +85,8 @@ local function init_globals()
 	global.next_factory_surface = global.next_factory_surface or 0
 	-- Map: Player index -> Last teleport time
 	global.last_player_teleport = global.last_player_teleport or {}
+	-- Map: Player index -> Whether preview is activated
+	global.player_preview_active = global.player_preview_active or {}
 	-- List of all construction-requester chests
 	global.construction_requester_chests = global.construction_requester_chests or {}
 end
@@ -151,12 +155,8 @@ end
 
 -- POWER MANAGEMENT --
 
--- Don't mess with this unless you mess with prototypes/entity/component.lua too (in the place marked <E>).
--- Every number needs to correspond to a valid indicator entity name
-local VALID_POWER_TRANSFER_RATES = {1,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000,50000,100000} -- MW
-
 local function make_valid_transfer_rate(rate)
-	for _,v in pairs(VALID_POWER_TRANSFER_RATES) do
+	for _,v in pairs(Constants.VALID_POWER_TRANSFER_RATES) do
 		if v == rate then return v end
 	end
 	return 0 -- Catchall
@@ -164,53 +164,74 @@ end
 
 local function update_power_settings(factory)
 	if factory.built then
+		local layout = factory.layout
+		-- Inside sender
+		local new_ies = factory.inside_surface.create_entity{
+			name = "factory-power-output-2-" .. factory.transfer_rate,
+			position = {factory.inside_x + layout.inside_energy_x, factory.inside_y + layout.inside_energy_y},
+			force = force
+		}
+		new_ies.destructible = false
+		new_ies.operable = false
+		new_ies.rotatable = false
+		if factory.inside_energy_sender.valid then
+			factory.inside_energy_sender.destroy()
+		end
+		factory.inside_energy_sender = new_ies
+
+		-- Inside receiver
+		local new_ier = factory.inside_surface.create_entity{
+			name = "factory-power-input-2-" .. factory.transfer_rate,
+			position = {factory.inside_x + layout.inside_energy_x, factory.inside_y + layout.inside_energy_y},
+			force = force
+		}
+		new_ier.destructible = false
+		new_ier.operable = false
+		new_ier.rotatable = false
+		if factory.inside_energy_receiver.valid then
+			factory.inside_energy_receiver.destroy()
+		end
+		factory.inside_energy_receiver = new_ier
+
+		-- Outside sender
+		local new_oes = factory.outside_surface.create_entity{
+			name = layout.outside_energy_sender_type .. "-" .. factory.transfer_rate,
+			position = {factory.outside_x, factory.outside_y},
+			force = factory.force
+		}
+		new_oes.destructible = false
+		new_oes.operable = false
+		new_oes.rotatable = false
+		if factory.outside_energy_sender.valid then
+			factory.outside_energy_sender.destroy()
+		end
+		factory.outside_energy_sender = new_oes
+
+		-- Outside receiver
+		local new_oer = factory.outside_surface.create_entity{
+			name = layout.outside_energy_receiver_type .. "-" .. factory.transfer_rate,
+			position = {factory.outside_x, factory.outside_y},
+			force = factory.force
+		}
+		new_oer.destructible = false
+		new_oer.operable = false
+		new_oer.rotatable = false
+		if factory.outside_energy_receiver.valid then
+			factory.outside_energy_receiver.destroy()
+		end
+		factory.outside_energy_receiver = new_oer
+
 		local e = factory.transfer_rate*16667 -- conversion factor of MW to J/U
 		if factory.transfers_outside then
-			if factory.inside_energy_receiver then
-				factory.inside_energy_receiver.electric_buffer_size = e
-				factory.inside_energy_receiver.electric_input_flow_limit = e
-				factory.inside_energy_receiver.electric_output_flow_limit = 0 -- Should fix bugs
-				factory.inside_energy_receiver.energy = 0
-			end
-			if factory.inside_energy_sender then
-				factory.inside_energy_sender.electric_buffer_size = e
-				factory.inside_energy_sender.electric_input_flow_limit = 0 -- Should fix bugs
-				factory.inside_energy_sender.electric_output_flow_limit = 0
-				factory.inside_energy_sender.energy = e
-			end
-			if factory.outside_energy_receiver then
-				factory.outside_energy_receiver.electric_buffer_size = e
-				factory.outside_energy_receiver.electric_input_flow_limit = 0
-				factory.outside_energy_receiver.energy = e
-			end
-			if factory.outside_energy_sender then
-				factory.outside_energy_sender.electric_buffer_size = e
-				factory.outside_energy_sender.electric_output_flow_limit = e
-				factory.outside_energy_sender.energy = 0
-			end
+			factory.inside_energy_sender.energy = 0--e
+			factory.inside_energy_receiver.energy = 0
+			factory.outside_energy_sender.energy = 0
+			factory.outside_energy_receiver.energy = 0--e
 		else
-			if factory.inside_energy_receiver then
-				factory.inside_energy_receiver.electric_buffer_size = e
-				factory.inside_energy_receiver.electric_input_flow_limit = 0
-				factory.inside_energy_receiver.electric_output_flow_limit = 0 -- Should fix bugs
-				factory.inside_energy_receiver.energy = e
-			end
-			if factory.inside_energy_sender then
-				factory.inside_energy_sender.electric_buffer_size = e
-				factory.inside_energy_sender.electric_input_flow_limit = 0 -- Should fix bugs
-				factory.inside_energy_sender.electric_output_flow_limit = e
-				factory.inside_energy_sender.energy = 0
-			end
-			if factory.outside_energy_receiver then
-				factory.outside_energy_receiver.electric_buffer_size = e
-				factory.outside_energy_receiver.electric_input_flow_limit = e
-				factory.outside_energy_receiver.energy = 0
-			end
-			if factory.outside_energy_sender then
-				factory.outside_energy_sender.electric_buffer_size = e
-				factory.outside_energy_sender.electric_output_flow_limit = 0
-				factory.outside_energy_sender.energy = e
-			end
+			factory.inside_energy_sender.energy = 0
+			factory.inside_energy_receiver.energy = 0--e
+			factory.outside_energy_sender.energy = 0--e
+			factory.outside_energy_receiver.energy = 0
 		end
 	end
 	if factory.energy_indicator and factory.energy_indicator.valid then
@@ -230,24 +251,24 @@ end
 local function adjust_power_transfer_rate(factory, positive)
 	local transfer_rate = factory.transfer_rate
 	if positive then
-		for i = 1,#VALID_POWER_TRANSFER_RATES do
-			if transfer_rate < VALID_POWER_TRANSFER_RATES[i] then
-				transfer_rate = VALID_POWER_TRANSFER_RATES[i]
+		for i = 1,#Constants.VALID_POWER_TRANSFER_RATES do
+			if transfer_rate < Constants.VALID_POWER_TRANSFER_RATES[i] then
+				transfer_rate = Constants.VALID_POWER_TRANSFER_RATES[i]
 				break
 			end
 		end
-		if transfer_rate > VALID_POWER_TRANSFER_RATES[#VALID_POWER_TRANSFER_RATES] then
-			transfer_rate = VALID_POWER_TRANSFER_RATES[#VALID_POWER_TRANSFER_RATES]
+		if transfer_rate > Constants.VALID_POWER_TRANSFER_RATES[#Constants.VALID_POWER_TRANSFER_RATES] then
+			transfer_rate = Constants.VALID_POWER_TRANSFER_RATES[#Constants.VALID_POWER_TRANSFER_RATES]
 		end
 	else
-		for i = #VALID_POWER_TRANSFER_RATES,1,-1 do
-			if transfer_rate > VALID_POWER_TRANSFER_RATES[i] then
-				transfer_rate = VALID_POWER_TRANSFER_RATES[i]
+		for i = #Constants.VALID_POWER_TRANSFER_RATES,1,-1 do
+			if transfer_rate > Constants.VALID_POWER_TRANSFER_RATES[i] then
+				transfer_rate = Constants.VALID_POWER_TRANSFER_RATES[i]
 				break
 			end
 		end
-		if transfer_rate < VALID_POWER_TRANSFER_RATES[1] then
-			transfer_rate = VALID_POWER_TRANSFER_RATES[1]
+		if transfer_rate < Constants.VALID_POWER_TRANSFER_RATES[1] then
+			transfer_rate = Constants.VALID_POWER_TRANSFER_RATES[1]
 		end
 	end
 	factory.transfer_rate = transfer_rate
@@ -426,13 +447,13 @@ local function create_factory_interior(layout, force)
 	end
 	factory.inside_surface.set_tiles(tiles)
 
-	local ier = factory.inside_surface.create_entity{name = "factory-power-input-2", position = {factory.inside_x + layout.inside_energy_x, factory.inside_y + layout.inside_energy_y}, force = force}
+	local ier = factory.inside_surface.create_entity{name = "factory-power-input-2-10", position = {factory.inside_x + layout.inside_energy_x, factory.inside_y + layout.inside_energy_y}, force = force}
 	ier.destructible = false
 	ier.operable = false
 	ier.rotatable = false
 	factory.inside_energy_receiver = ier
 	
-	local ies = factory.inside_surface.create_entity{name = "factory-power-output-2", position = {factory.inside_x + layout.inside_energy_x, factory.inside_y + layout.inside_energy_y}, force = force}
+	local ies = factory.inside_surface.create_entity{name = "factory-power-output-2-10", position = {factory.inside_x + layout.inside_energy_x, factory.inside_y + layout.inside_energy_y}, force = force}
 	ies.destructible = false
 	ies.operable = false
 	ies.rotatable = false
@@ -490,13 +511,13 @@ function create_factory_exterior(factory, building)
 	factory.outside_door_y = factory.outside_y + layout.outside_door_y
 	factory.outside_surface = building.surface
 	
-	local oer = factory.outside_surface.create_entity{name = layout.outside_energy_receiver_type, position = {factory.outside_x, factory.outside_y}, force = force}
+	local oer = factory.outside_surface.create_entity{name = layout.outside_energy_receiver_type .. "-10", position = {factory.outside_x, factory.outside_y}, force = force}
 	oer.destructible = false
 	oer.operable = false
 	oer.rotatable = false
 	factory.outside_energy_receiver = oer
 	
-	local oes = factory.outside_surface.create_entity{name = layout.outside_energy_sender_type, position = {factory.outside_x, factory.outside_y}, force = force}
+	local oes = factory.outside_surface.create_entity{name = layout.outside_energy_sender_type .. "-10", position = {factory.outside_x, factory.outside_y}, force = force}
 	oes.destructible = false
 	oes.operable = false
 	oes.rotatable = false
@@ -1911,7 +1932,7 @@ end
 
 -- How players pick up factories
 -- Working factory buildings don't return items, so we have to manually give the player an item
-script.on_event(defines.events.on_preplayer_mined_item, function(event)
+script.on_event(defines.events.on_pre_player_mined_item, function(event)
 	local entity = event.entity
 	if HasLayout(entity.name) then
 		local factory = get_factory_by_building(entity)
@@ -2012,30 +2033,36 @@ end)
 
 -- GUI --
 
-local function get_camera_parent(player)
-	local parent = player.gui.top.factory_camera_placeholder
-	if not parent then
-		parent = player.gui.top.add{type="flow", name="factory_camera_placeholder"}
-		parent.style.visible = false
+local function get_camera_toggle_button(player)
+	local buttonflow = mod_gui.get_button_flow(player)
+	local button = buttonflow.factory_camera_toggle_button or buttonflow.add{type="sprite-button", name="factory_camera_toggle_button", sprite="technology/factory-architecture-t1"}
+	button.style.visible = player.force.technologies["factory-preview"].researched
+	return button
+end
+
+local function get_camera_frame(player)
+	local frameflow = mod_gui.get_frame_flow(player)
+	local camera_frame = frameflow.factory_camera_frame
+	if not camera_frame then
+		camera_frame = frameflow.add{type = "frame", name = "factory_camera_frame", style = "captionless_frame"}
+		camera_frame.style.visible = false
 	end
-	return parent
+	return camera_frame
 end
 
 -- prepare_gui was declared waaay above
 prepare_gui = function(player)
-	get_camera_parent(player)
+	get_camera_toggle_button(player)
+	get_camera_frame(player)
 end
 
 local function set_camera(player, factory, inside)
 	if not player.force.technologies["factory-preview"].researched then return end
 
 	local ps = settings.get_player_settings(player)
-	local ps_preview_enabled = ps["Microfactorio-preview-enabled"]
-	if ps_preview_enabled and not ps_preview_enabled.value then return end
-
-	local ps_preview_size = ps["Microfactorio-preview-size"]
+	local ps_preview_size = ps["Factorissimo2-preview-size"]
 	local preview_size = ps_preview_size and ps_preview_size.value or 300
-	local ps_preview_zoom = ps["Microfactorio-preview-zoom"]
+	local ps_preview_zoom = ps["Factorissimo2-preview-zoom"]
 	local preview_zoom = ps_preview_zoom and ps_preview_zoom.value or 1
 	local position, surface_index, zoom
 	if not inside then
@@ -2047,32 +2074,29 @@ local function set_camera(player, factory, inside)
 		surface_index = factory.inside_surface.index
 		zoom = (preview_size/(32/preview_zoom))/(5+factory.layout.inside_size)
 	end
-	local gui = get_camera_parent(player)
-	local camera_frame = gui.factory_camera_frame
-	if camera_frame then
-		local camera = camera_frame.factory_camera
+	local camera_frame = get_camera_frame(player)
+	local camera = camera_frame.factory_camera
+	if camera then
 		camera.position = position
 		camera.surface_index = surface_index
 		camera.zoom = zoom
+		camera.style.minimal_width = preview_size
+		camera.style.minimal_height = preview_size
 	else
-		gui.style.visible = true
-		local camera_frame = gui.add{type = "frame", name = "factory_camera_frame", style = "captionless_frame_style"}
 		local camera = camera_frame.add{type = "camera", name = "factory_camera", position = position, surface_index = surface_index, zoom = zoom}
 		camera.style.minimal_width = preview_size
 		camera.style.minimal_height = preview_size
 	end
+	camera_frame.style.visible = true
 end
 
 local function unset_camera(player)
-	local gui = get_camera_parent(player)
-	local camera_frame = gui.factory_camera_frame
-	if camera_frame then
-		camera_frame.destroy()
-		gui.style.visible = false
-	end
+	get_camera_frame(player).style.visible = false
 end
 
 local function update_camera(player)
+	if not global.player_preview_active[player.index] then return end
+	if not player.force.technologies["factory-preview"].researched then return end
 	local cursor_stack = player.cursor_stack
 	if cursor_stack and cursor_stack.valid_for_read and global.saved_factories[cursor_stack.name] then
 		set_camera(player, global.saved_factories[cursor_stack.name], true)
@@ -2094,6 +2118,19 @@ local function update_camera(player)
 	end
 	unset_camera(player)
 end
+
+script.on_event(defines.events.on_gui_click, function(event)
+	local player = game.players[event.player_index]
+	if event.element.name == "factory_camera_toggle_button" then
+		if global.player_preview_active[player.index] then
+			get_camera_toggle_button(player).sprite = "technology/factory-architecture-t1"
+			global.player_preview_active[player.index] = false
+		else
+			get_camera_toggle_button(player).sprite = "technology/factory-preview"
+			global.player_preview_active[player.index] = true
+		end
+	end
+end)
 
 script.on_event(defines.events.on_selected_entity_changed, function(event)
 	update_camera(game.players[event.player_index])
@@ -2235,7 +2272,7 @@ for _,name in pairs(Connections.indicator_names) do
 end
 
 CONNECTION_INDICATOR_NAMES["factory-connection-indicator-energy-d0"] = true
-for _,rate in pairs(VALID_POWER_TRANSFER_RATES) do
+for _,rate in pairs(Constants.VALID_POWER_TRANSFER_RATES) do
 	CONNECTION_INDICATOR_NAMES["factory-connection-indicator-energy-d" .. rate] = true
 end
 

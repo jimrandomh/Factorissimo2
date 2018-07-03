@@ -8,6 +8,15 @@ data:extend({
 		default_value = false,
 		order = "a"
 	},
+	{
+		type = "int-setting",
+		name = "microfactorio-power-batching",
+		setting_type = "startup",
+		minimum_value = 1,
+		default_value = 1,
+		maximum_value = 60,
+		order = "a-b"
+	},
 
 	-- Global
 

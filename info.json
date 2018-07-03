@@ -4,6 +4,6 @@
   "title": "Microfactorio",
   "author": "jimrandomh",
   "description": "Place factory buildings, walk inside them, then copy those buildings with blueprints and paste-settings to make a dense, modular and rearrangeable factory. Based on Factorissimo2 by MagmaMcFry.",
-  "factorio_version": "0.15",
-  "dependencies": ["base >= 0.15.13"]
+  "factorio_version": "0.16",
+  "dependencies": ["base >= 0.16"]
 }

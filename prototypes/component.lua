@@ -1,6 +1,8 @@
 require("util")
 require("constants")
 
+local power_batch_size = settings.startup["microfactorio-power-batching"].value or 1
+
 local function cwc0()
 	return {shadow = {red = {0,0},green = {0,0}}, wire = {red = {0,0},green = {0,0}}}
 end
@@ -119,56 +121,62 @@ end
 -- Factory power I/O
 
 function make_energy_interfaces(size,passive_input,passive_output,icon)
-	local selection_size = size-0.6;
+	local j = size/2-0.3
 	local input_priority = (passive_input and "terciary") or "secondary-input"
 	local output_priority = (passive_output and "terciary") or "secondary-output"
-	-- I wish I could make only the input entity passive, so accumulators inside could charge, but there's a bug that prevents this from 
-	data:extend({
-		{
-			type = "electric-energy-interface",
-			name = "factory-power-input-" .. size,
-			icon = icon,
-			flags = {"not-on-map"},
-			minable = nil,
-			max_health = 1,
-			selectable_in_game = false,
-			energy_source = {
-				type = "electric",
-				usage_priority = input_priority,
-				input_flow_limit = "60MW",
-				output_flow_limit = "0MW",
-				buffer_capacity = "1MJ",
-				render_no_power_icon = false,
+	for _, transfer_rate in pairs(Constants.VALID_POWER_TRANSFER_RATES) do
+		local buffer_size = transfer_rate*16667*power_batch_size
+		data:extend({
+			{
+				type = "electric-energy-interface",
+				name = "factory-power-input-" .. size .. "-" .. transfer_rate,
+				localised_name = {"entity-name.factory-power-input-" .. size},
+				icon = icon,
+				icon_size = 32,
+				flags = {"not-on-map"},
+				minable = nil,
+				max_health = 1,
+				selectable_in_game = false,
+				energy_source = {
+					type = "electric",
+					usage_priority = input_priority,
+					input_flow_limit = transfer_rate .. "MW",
+					--output_flow_limit = "0MW",
+					buffer_capacity = buffer_size .. "J",
+					render_no_power_icon = false,
+				},
+				energy_usage = "0MW",
+				energy_production = "0MW",
+				selection_box = {{-j,-j},{j,j}},
+				collision_box = {{-j,-j},{j,j}},
+				collision_mask = {},
 			},
-			energy_usage = "0MW",
-			energy_production = "0MW",
-			selection_box = centered_square(selection_size),
-			collision_box = centered_square(selection_size),
-			collision_mask = {},
-		},
-		{
-			type = "electric-energy-interface",
-			name = "factory-power-output-" .. size,
-			icon = icon,
-			flags = {"not-on-map"},
-			minable = nil,
-			max_health = 1,
-			selectable_in_game = false,
-			energy_source = {
-				type = "electric",
-				usage_priority = output_priority,
-				input_flow_limit = "0MW",
-				output_flow_limit = "60MW",
-				buffer_capacity = "1MJ",
-				render_no_power_icon = false,
+			{
+				type = "electric-energy-interface",
+				name = "factory-power-output-" .. size .. "-" .. transfer_rate,
+				localised_name = {"entity-name.factory-power-output-" .. size},
+				icon = icon,
+				icon_size = 32,
+				flags = {"not-on-map"},
+				minable = nil,
+				max_health = 1,
+				selectable_in_game = false,
+				energy_source = {
+					type = "electric",
+					usage_priority = output_priority,
+					--input_flow_limit = "0MW",
+					output_flow_limit = transfer_rate .. "MW",
+					buffer_capacity = buffer_size .. "J",
+					render_no_power_icon = false,
+				},
+				energy_usage = "0MW",
+				energy_production = "0MW",
+				selection_box = {{-j,-j},{j,j}},
+				collision_box = {{-j,-j},{j,j}},
+				collision_mask = {},
 			},
-			energy_usage = "0MW",
-			energy_production = "0MW",
-			selection_box = centered_square(selection_size),
-			collision_box = centered_square(selection_size),
-			collision_mask = {},
-		},
-	})
+		})
+	end
 end
 make_energy_interfaces(2,true,true,"__base__/graphics/icons/substation.png")
 -- true,false would be optimal, but due to a bug it doesn't work. Maybe it'll be fixed.
@@ -217,8 +225,8 @@ local function create_indicator(ctype, suffix, image)
 			flow_length_in_ticks = 100,
 			vehicle_impact_sound = {filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65},
 			--working_sound = silent,
-			circuit_wire_connection_points = {cwc0(), cwc0(), cwc0(), cwc0()},
-			circuit_connector_sprites = {cc0(), cc0(), cc0(), cc0()},
+			circuit_wire_connection_points = circuit_connector_definitions["storage-tank"].points,
+			circuit_connector_sprites = circuit_connector_definitions["storage-tank"].sprites,
 			circuit_wire_max_distance = 0,
 		}
 	})
@@ -314,6 +322,7 @@ data:extend({
 		type = "lamp",
 		name = "factory-ceiling-light",
 		icon = "__base__/graphics/icons/small-lamp.png",
+		icon_size = 32,
 		flags = {"not-on-map"},
 		minable = nil,
 		max_health = 55,
@@ -338,8 +347,8 @@ data:extend({
 		picture_on = blank(),
 		signal_to_color_mapping = {},
 
-		circuit_wire_connection_point = cwc0(),
-		circuit_connector_sprites = cc0(),
+		circuit_wire_connection_point = circuit_connector_definitions["lamp"].points,
+		circuit_connector_sprites = circuit_connector_definitions["lamp"].sprite,
 		circuit_wire_max_distance = 0,
 	},
 	
@@ -347,6 +356,7 @@ data:extend({
 		type = "constant-combinator",
 		name = "factory-overlay-controller",
 		icon = "__base__/graphics/icons/iron-chest.png",
+		icon_size = 32,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(overlay_controller_picture()),
@@ -368,6 +378,7 @@ data:extend({
 		type = "item",
 		name = "factory-overlay-display-1-item",
 		icon = "__core__/graphics/entity-info-dark-background.png",
+		icon_size = 32,
 		flags = {"hidden"},
 		subgroup = "microfactorio",
 		place_result = "blueprint-factory-overlay-display-1",
@@ -377,6 +388,7 @@ data:extend({
 		type = "item",
 		name = "factory-overlay-display-2-item",
 		icon = "__core__/graphics/entity-info-dark-background.png",
+		icon_size = 32,
 		flags = {"hidden"},
 		subgroup = "microfactorio",
 		place_result = "blueprint-factory-overlay-display-2",
@@ -386,6 +398,7 @@ data:extend({
 		type = "constant-combinator",
 		name = "factory-overlay-display-1",
 		icon = graphicsDir.."/icon/blank-icon.png",
+		icon_size = 32,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(blank()),
@@ -409,6 +422,7 @@ data:extend({
 		type = "constant-combinator",
 		name = "blueprint-factory-overlay-display-1",
 		icon = "__core__/graphics/entity-info-dark-background.png",
+		icon_size = 32,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(sprite_entity_info()),
@@ -435,6 +449,7 @@ data:extend({
 		type = "constant-combinator",
 		name = "factory-overlay-display-2",
 		icon = graphicsDir.."/icon/blank-icon.png",
+		icon_size = 32,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(blank()),
@@ -458,6 +473,7 @@ data:extend({
 		type = "constant-combinator",
 		name = "blueprint-factory-overlay-display-2",
 		icon = "__core__/graphics/entity-info-dark-background.png",
+		icon_size = 32,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(sprite_entity_info()),
@@ -491,7 +507,7 @@ data:extend({
 		collision_box = centered_square(0.8),
 		collision_mask = {},
 		fluid_box = {
-			base_area = 0, -- Important, because fluid displacement on deconstruction ignores connection type
+			base_area = 1,
 			pipe_connections = {
 				{position = {0, -1}, type = "output"},
 				{position = {1, 0}, type = "output"},
@@ -515,7 +531,7 @@ data:extend({
 		collision_box = centered_square(0.8),
 		collision_mask = {},
 		fluid_box = {
-			base_area = 0, -- Important, because fluid displacement on deconstruction ignores connection type
+			base_area = 1,
 			pipe_connections = {
 				{position = {0, -1}, type = "output"},
 				{position = {1, 0}, type = "output"},
@@ -532,6 +548,7 @@ data:extend({
 		type = "mining-drill",
 		name = "factory-port-marker",
 		icon = "__base__/graphics/icons/electric-mining-drill.png",
+		icon_size = 32,
 		flags = {"not-on-map"},
 		minable = nil,
 		max_health = 40,

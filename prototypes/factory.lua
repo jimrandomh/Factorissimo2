@@ -5,10 +5,6 @@ local Constants = Constants
 local function cwc0()
 	return {shadow = {red = {0,0},green = {0,0}}, wire = {red = {0,0},green = {0,0}}}
 end
-local function cc0()
-	return get_circuit_connector_sprites({0,0},nil,1)
-end
-
 
 function factory_base(params)
 	local name = params.name .. params.suffix
@@ -18,6 +14,7 @@ function factory_base(params)
 		name = name,
 		type = "storage-tank",
 		icon = params.icon,
+		icon_size = 32,
 		max_health = params.max_health,
 		flags = {"player-creation"},
 		collision_box = centered_square(params.collision_size),
@@ -45,8 +42,8 @@ function factory_base(params)
 			pipe_connections = {},
 		},
 		flow_length_in_ticks = 1,
-		circuit_wire_connection_points = {cwc0(), cwc0(), cwc0(), cwc0()},
-		circuit_connector_sprites = {cc0(), cc0(), cc0(), cc0()},
+		circuit_wire_connection_points = circuit_connector_definitions["storage-tank"].points,
+		circuit_connector_sprites = circuit_connector_definitions["storage-tank"].sprites,
 		circuit_wire_max_distance = 0,
 		map_color = {r = 0.8, g = 0.7, b = 0.55}
 	}
@@ -62,6 +59,7 @@ function factory_item_base(params)
 		type = "item",
 		subgroup = "microfactorio",
 		icon = params.icon,
+		icon_size = 32,
 		order = params.order,
 		flags = item_flags,
 		place_result = name,
@@ -119,6 +117,7 @@ function create_factory_entities(params)
 		type = "item",
 		name = params.name .. "-blueprint",
 		icon = params.icon,
+		icon_size = 32,
 		flags = {},
 		subgroup = "microfactorio",
 		order = "a-a",
@@ -129,6 +128,7 @@ function create_factory_entities(params)
 		type = "programmable-speaker",
 		name = params.name .. "-blueprint",
 		icon = params.icon,
+		icon_size = 32,
 		max_health = 1000,
 		flags = {"player-creation"},
 		

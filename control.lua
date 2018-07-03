@@ -765,24 +765,34 @@ local function describe_for_reconstruction(entity, spill_surface, spill_position
 		health = entity.health,
 		energy = entity.energy,
 		temperature = entity.temperature,
+		old_entity = entity,
+		was_teleported = false
 	}
 	
 	if entity.prototype.type == "underground-belt" then
 		result.belt_to_ground_type = entity.belt_to_ground_type
 	end
-	if entity.prototype.type == "underground-belt" or entity.prototype.type == "transport-belt" then
+	if entity.prototype.type == "underground-belt" or entity.prototype.type == "transport-belt" or entity.prototype.type == "loader" or entity.prototype.type == "splitter" then
 		result.belt_contents = {}
-		for transport_line_index=1,2 do
+
+		local num_transport_lines = 2
+		if entity.prototype.type == "splitter" then
+			num_transport_lines = 8
+		end
+
+		for transport_line_index=1,num_transport_lines do
 			--result.belt_contents[transport_line_index] = {}
 			local transport_line = entity.get_transport_line(transport_line_index)
-			local num_items = transport_line.get_item_count()
-			for ii=1,num_items do
-				local item = transport_line[ii]
-				if item then
-					spill_surface.spill_item_stack(spill_position, item)
+			if transport_line then
+				local num_items = transport_line.get_item_count()
+				for ii=1,num_items do
+					local item = transport_line[ii]
+					if item then
+						spill_surface.spill_item_stack(spill_position, item)
+					end
 				end
+				transport_line.clear()
 			end
-			transport_line.clear()
 		end
 	end
 	if entity.name == "item-on-ground" then
@@ -791,15 +801,14 @@ local function describe_for_reconstruction(entity, spill_surface, spill_position
 			count = entity.stack.count
 		}
 	end
-	-- TODO: Extact contents from pipes, storage tanks
 	if entity.prototype.type == "loader" then
 		result.loader_type = entity.loader_type
 	end
-	if entity.prototype.type == "assembling-machine" then
-		if entity.recipe then
-			result.recipe = entity.recipe.name
-		end
-	end
+	--if entity.prototype.type == "assembling-machine" then
+	--	if entity.recipe then
+	--		result.recipe = entity.recipe.name
+	--	end
+	--end
 	if entity.has_items_inside() then
 		result.inventories = {}
 		for _,inventory_id in ipairs(all_inventories) do
@@ -809,16 +818,32 @@ local function describe_for_reconstruction(entity, spill_surface, spill_position
 			end
 		end
 	end
-	-- TODO: Extract liquids from pipes, storage tanks, etc
+	
+	-- Record wire connections
+	if entity.circuit_connection_definitions then
+		result.circuit_connection_definitions = entity.circuit_connection_definitions
+	else
+		result.circuit_connection_definitions = {}
+	end
+
 	return result
 end
 
-local function reconstruct_entity(factory, description)
+local function reconstruct_entity(factory, description, rotation_amount)
+	local rotation_8dir = 2*orientation_to_rotation_count(rotation_amount)
+
+	if description.name == "loader" and description.loader_type=="output" then
+		-- With loaders, orientation is a more complex thing because there's an
+		-- extra variable (input/output) which reverses the belt direction.
+		-- So if it's an output loader, the creation direction needs to be
+		-- reversed.
+		rotation_8dir = rotation_8dir+4
+	end
 	local entity_create_params = {
 		name = description.name,
 		position = rotate_position(factory, description.position),
 		force = description.force,
-		direction = (description.direction+2)%8
+		direction = (description.direction+rotation_8dir)%8
 	}
 	local prototype = game.entity_prototypes[description.name]
 	if prototype.type == "underground-belt" then
@@ -840,12 +865,6 @@ local function reconstruct_entity(factory, description)
 	if entity.prototype.type == "loader" then
 		entity.loader_type = description.loader_type
 	end
-	if entity.prototype.type == "assembling-machine" then
-		local force = factory.force
-		if description.recipe then
-			entity.recipe = force.recipes[description.recipe]
-		end
-	end
 	if description.inventories then
 		for inventory_id,contents in pairs(description.inventories) do
 			local inventory = entity.get_inventory(inventory_id)
@@ -856,31 +875,58 @@ local function reconstruct_entity(factory, description)
 			end
 		end
 	end
-	-- TODO: Put contents back into pipes, storage tanks, etc
+	
+	entity.copy_settings(description.old_entity)
+	return entity
 end
 
-local function rotate_factory(factory)
+local function string_to_wire_type(str)
+	if str=="red" then
+		return defines.wire_type.red
+	elseif str=="green" then
+		return defines.wire_type.green
+	elseif str=="copper" then
+		return defines.wire_type.copper
+	end
+end
+
+local function rotate_factory(factory, rotation_amount)
+	local rotation_8dir = 2*orientation_to_rotation_count(rotation_amount)
 	local inside_area = get_factory_inside_area(factory)
 	local inside_entities = factory.inside_surface.find_entities(inside_area)
 	local outside_surface = factory.outside_surface
 	local outside_position = {x=factory.outside_x, y=factory.outside_y}
+	
+	-- Save anything that can't be teleported
+	local reconstructed_entities = {}
+	for _,entity in ipairs(inside_entities) do
+		if is_factory_component_entity(entity) then
+			-- Skip
+		--elseif not can_teleport(entity.name, entity.prototype.type) then
+		else
+			reconstructed_entities[entity] = describe_for_reconstruction(entity, outside_surface, outside_position)
+		end
+	end
+
+	-- Disconnect all wires
+	for _,entity in ipairs(inside_entities) do
+		if entity.circuit_connection_definitions then
+			for _,connection in pairs(entity.circuit_connection_definitions) do
+				entity.disconnect_neighbour({
+					wire = connection.wire,
+					target_entity = connection.target_entity,
+					source_circuit_id = connection.source_circuit_id,
+					target_circuit_id = connection.target_circuit_id 
+				})
+			end
+		end
+	end
 	
 	-- Create a blueprint which captures the factory contents
 	local blueprint_string = factory_to_blueprint_string(factory, factory.force)
 	
 	-- Filter the blueprint to only contain things that can't be teleported
 	blueprint_string = filter_blueprint_reconstructed_only(blueprint_string)
-	
-	-- Clear anything that can't be teleported
-	local reconstructed_entities = {}
-	for _,entity in ipairs(inside_entities) do
-		if is_factory_component_entity(entity) then
-			-- Skip
-		elseif not can_teleport(entity.name, entity.prototype.type) then
-			table.insert(reconstructed_entities, describe_for_reconstruction(entity, outside_surface, outside_position))
-			entity.destroy()
-		end
-	end
 	
 	-- Move teleported entities
 	for _,entity in pairs(inside_entities) do
@@ -891,6 +937,8 @@ local function rotate_factory(factory)
 				local rotated_position = rotate_position(factory, entity.position)
 				
 				if HasLayout(entity.name) then
+					reconstructed_entities[entity].was_teleported = true
+
 					-- If this is a recursive factory building, update it
 					local nested_factory = get_factory_by_building(entity)
 					cleanup_factory_exterior(nested_factory, entity)
@@ -904,11 +952,12 @@ local function rotate_factory(factory)
 					}
 					
 					create_factory_exterior(nested_factory, entity)
-					rotate_factory(nested_factory)
+					rotate_factory(nested_factory, rotation_amount)
 				else
 					if entity.teleport(rotated_position) then
-						if entity.supports_direction then
-							entity.direction = (entity.direction+2) % 8
+						reconstructed_entities[entity].was_teleported = true
+						if entity.valid and entity.supports_direction then
+							entity.direction = (entity.direction+rotation_8dir) % 8
 						end
 					else
 						game.print("Failed to move entity: "..entity.prototype.type)
@@ -923,9 +972,57 @@ local function rotate_factory(factory)
 		apply_blueprint_to_factory(factory, factory.force, blueprint_string, 0.25)
 	end
 	
-	-- Reconstruct entities that were deconstructed
-	for _,entity in ipairs(reconstructed_entities) do
-		reconstruct_entity(factory, entity)
+	-- Reconstruct entities that couldn't be teleported
+	local entity_map = {}
+	for _,desc in pairs(reconstructed_entities) do
+		if (desc.was_teleported) then
+			entity_map[desc.old_entity] = desc.old_entity
+		else
+			local new_entity = reconstruct_entity(factory, desc, rotation_amount)
+			entity_map[desc.old_entity] = new_entity
+		end
+	end
+
+	-- Reconnect wires
+	for _,old_entity in ipairs(inside_entities) do
+		if not old_entity or not old_entity.valid then
+			-- Skip
+		elseif is_factory_component_entity(old_entity) then
+			-- Skip
+		else
+			local new_entity = old_entity
+			if entity_map[old_entity] then
+				new_entity = entity_map[old_entity]
+			end
+			
+			-- Restore wire connections
+			local description = reconstructed_entities[old_entity]
+			if not description then
+				game.print("Nil entity description for "..old_entity.prototype.type)
+			else
+				if description.circuit_connection_definitions then
+					for _,connection in pairs(description.circuit_connection_definitions) do
+						local mapped_neighbour = connection.target_entity
+						if entity_map[connection.target_entity] then
+							local mapped_neighbour = entity_map[connection.target_entity]
+						end
+						new_entity.connect_neighbour({
+							wire = connection.wire,
+							target_entity = mapped_neighbour,
+							source_circuit_id = connection.source_circuit_id,
+							target_circuit_id = connection.target_circuit_id
+						})
+					end
+				end
+			end
+		end
+	end
+	
+	-- Delete entities that couldn't be teleported and were cloned
+	for _,desc in pairs(reconstructed_entities) do
+		if not (desc.was_teleported) then
+			desc.old_entity.destroy()
+		end
 	end
 end
 
@@ -2301,7 +2398,7 @@ script.on_event("factory-rotate", function(event)
 		if factory then
 			-- toggle_port_markers(factory)
 			if player.force == factory.force then
-				rotate_factory(factory)
+				rotate_factory(factory, 0.25)
 			else
 				player.print("That building belongs to another team")
 			end

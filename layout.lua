@@ -40,18 +40,12 @@ local function factory_layout_base(properties)
 	
 	-- Add a sign next to each connection
 	for id,connection in pairs(layout.connections) do
-		local sign_inside_x = connection.inside_x + DX[connection.direction_out]
-		local sign_inside_y = connection.inside_y + DY[connection.direction_out]
+		local sign_inside_x = connection.inside_x
+		local sign_inside_y = connection.inside_y
 		if DY[connection.direction_out] == 0 then --Horizontal?
-			sign_inside_y = sign_inside_y-1
+			sign_inside_y = sign_inside_y+1
 		else
-			-- One step away from center on the x-axis (otherwise on the small
-			-- factory it overlaps with the power pole).
-			if sign_inside_x>0 then
-				sign_inside_x = sign_inside_x+1
-			else
-				sign_inside_x = sign_inside_x-1
-			end
+			sign_inside_x = sign_inside_x+1
 		end
 		
 		layout.overlays[id] = {
@@ -129,8 +123,8 @@ local layout_generators = {
 				center = {
 					outside_x = 0,
 					outside_y = 0,
-					inside_x = 2.5,
-					inside_y = 8.5,
+					inside_x = 1.5,
+					inside_y = 9.5,
 					outside_size = 2,
 				},
 			},
@@ -155,6 +149,9 @@ local layout_generators = {
 				},
 				{
 					x1 = -3, x2 = 3, y1 = 15, y2 = 18, tile = "factory-wall-1"
+				},
+				{
+					x1 = 1, x2 = 4, y1 = 15, y2 = 18, tile = "factory-wall-1"
 				},
 				{
 					x1 = -2, x2 = 2, y1 = 15, y2 = 18, tile = "factory-entrance-1"
@@ -205,14 +202,14 @@ local layout_generators = {
 				nw = {
 					outside_x = -2,
 					outside_y = -1,
-					inside_x = 3.5,
+					inside_x = 2.5,
 					inside_y = 16.5,
 					outside_size = 2,
 				},
 				ne = {
 					outside_x = 2,
 					outside_y = -1,
-					inside_x = 4.5,
+					inside_x = 3.5,
 					inside_y = 16.5,
 					outside_size = 2,
 				},
@@ -238,6 +235,9 @@ local layout_generators = {
 				},
 				{
 					x1 = -3, x2 = 3, y1 = 23, y2 = 26, tile = "factory-wall-2"
+				},
+				{
+					x1 = 2, x2 = 4, y1 = 23, y2 = 26, tile = "factory-wall-2"
 				},
 				{
 					x1 = -2, x2 = 2, y1 = 23, y2 = 26, tile = "factory-entrance-2"
@@ -295,14 +295,14 @@ local layout_generators = {
 				nw = {
 					outside_x = -3,
 					outside_y = -3,
-					inside_x = 3.5,
+					inside_x = 2.5,
 					inside_y = 24.5,
 					outside_size = 2,
 				},
 				ne = {
 					outside_x = 3,
 					outside_y = -3,
-					inside_x = 4.5,
+					inside_x = 3.5,
 					inside_y = 24.5,
 					outside_size = 2,
 				},
@@ -310,14 +310,14 @@ local layout_generators = {
 				sw = {
 					outside_x = -3,
 					outside_y = 1,
-					inside_x = 3.5,
+					inside_x = 2.5,
 					inside_y = 25.5,
 					outside_size = 2,
 				},
 				se = {
 					outside_x = 3,
 					outside_y = 1,
-					inside_x = 4.5,
+					inside_x = 3.5,
 					inside_y = 25.5,
 					outside_size = 2,
 				},
@@ -343,6 +343,9 @@ local layout_generators = {
 				},
 				{
 					x1 = -3, x2 = 3, y1 = 30, y2 = 33, tile = "factory-wall-3"
+				},
+				{
+					x1 = 2, x2 = 4, y1 = 30, y2 = 33, tile = "factory-wall-3"
 				},
 				{
 					x1 = -2, x2 = 2, y1 = 30, y2 = 33, tile = "factory-entrance-3"
@@ -408,14 +411,14 @@ local layout_generators = {
 				nw = {
 					outside_x = -4,
 					outside_y = -4,
-					inside_x = 3.5,
+					inside_x = 2.5,
 					inside_y = 31.5,
 					outside_size = 2,
 				},
 				ne = {
 					outside_x = 4,
 					outside_y = -4,
-					inside_x = 4.5,
+					inside_x = 3.5,
 					inside_y = 31.5,
 					outside_size = 2,
 				},
@@ -423,14 +426,14 @@ local layout_generators = {
 				sw = {
 					outside_x = -4,
 					outside_y = 2,
-					inside_x = 3.5,
+					inside_x = 2.5,
 					inside_y = 32.5,
 					outside_size = 2,
 				},
 				se = {
 					outside_x = 4,
 					outside_y = 2,
-					inside_x = 4.5,
+					inside_x = 3.5,
 					inside_y = 32.5,
 					outside_size = 2,
 				},

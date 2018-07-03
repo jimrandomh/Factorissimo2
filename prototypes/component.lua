@@ -110,11 +110,12 @@ end
 
 function overlay_controller_picture()
 	return {
-		filename = "__base__/graphics/entity/iron-chest/iron-chest.png",
+		filename = graphicsDir .. "/factory/signpost.png",
 		priority = "extra-high",
-		width = 48,
-		height = 34,
-		shift = {0.1875, 0}
+		width = 128,
+		height = 68,
+		scale = 0.45,
+		shift = {0.4375, 0}
 	}
 end
 
@@ -377,8 +378,8 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-overlay-display-1-item",
-		icon = "__core__/graphics/entity-info-dark-background.png",
-		icon_size = 32,
+		icon = graphicsDir .. "/factory/signpost-item.png",
+		icon_size = 68,
 		flags = {"hidden"},
 		subgroup = "microfactorio",
 		place_result = "blueprint-factory-overlay-display-1",
@@ -387,8 +388,8 @@ data:extend({
 	{
 		type = "item",
 		name = "factory-overlay-display-2-item",
-		icon = "__core__/graphics/entity-info-dark-background.png",
-		icon_size = 32,
+		icon = graphicsDir .. "/factory/signpost-item.png",
+		icon_size = 68,
 		flags = {"hidden"},
 		subgroup = "microfactorio",
 		place_result = "blueprint-factory-overlay-display-2",
@@ -397,8 +398,8 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "factory-overlay-display-1",
-		icon = graphicsDir.."/icon/blank-icon.png",
-		icon_size = 32,
+		icon = graphicsDir .. "/factory/signpost-item.png",
+		icon_size = 68,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(blank()),
@@ -421,8 +422,8 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "blueprint-factory-overlay-display-1",
-		icon = "__core__/graphics/entity-info-dark-background.png",
-		icon_size = 32,
+		icon = graphicsDir .. "/factory/signpost-item.png",
+		icon_size = 68,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(sprite_entity_info()),
@@ -448,8 +449,8 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "factory-overlay-display-2",
-		icon = graphicsDir.."/icon/blank-icon.png",
-		icon_size = 32,
+		icon = graphicsDir .. "/factory/signpost-item.png",
+		icon_size = 68,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(blank()),
@@ -472,8 +473,8 @@ data:extend({
 	{
 		type = "constant-combinator",
 		name = "blueprint-factory-overlay-display-2",
-		icon = "__core__/graphics/entity-info-dark-background.png",
-		icon_size = 32,
+		icon = graphicsDir .. "/factory/signpost-item.png",
+		icon_size = 68,
 		item_slot_count = Constants.overlay_slot_count,
 		
 		sprites = repeat_nesw(sprite_entity_info()),

@@ -147,6 +147,29 @@ local function init_connection(factory, cid, cpos) -- Only call this when factor
 	end
 end
 
+Connections.get_port_marker_type = function(factory, cid)
+	local connection = factory.connections[cid]
+	local connection_layout = factory.layout.connections[cid]
+	
+	if connection then
+		setting, dir = c_direction[connection._type](connection)
+		if setting and setting:sub(0,1)=="b" then
+			return "bidirectional"
+		elseif dir == connection_layout.direction_in then
+			return "in"
+		else
+			return "out"
+		end
+	end
+	
+	-- TODO: Handle half-connections. In particular:
+	--   * If there's a belt inside, show its direction
+	--   * If there's a pipe, chest, or circuit inside, show saved settings
+	--     from the blueprint or from before it was disconnected
+		
+	return "disconnected"
+end
+
 local function destroy_connection(conn)
 	if conn._valid then
 		c_destroy[conn._type](conn)

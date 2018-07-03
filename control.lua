@@ -14,6 +14,8 @@ require("constants")
 
 require("mod-gui")
 
+require("connections")
+
 local BlueprintString = require("blueprintstring.blueprintstring")
 local serpent = require "blueprintstring.serpent0272"
 
@@ -351,6 +353,9 @@ local function update_overlay(factory)
 				end
 			end
 		end
+		
+		remove_port_markers(factory)
+		add_port_markers(factory)
 	end
 end
 
@@ -571,18 +576,93 @@ end
 local function toggle_port_markers(factory)
 	if not factory.built then return end
 	if #(factory.outside_port_markers) == 0 then
-		for id, cpos in pairs(factory.layout.connections) do
-			local marker = factory.outside_surface.create_entity{name = "factory-port-marker", position = {
-			factory.outside_x + cpos.outside_x-cpos.indicator_dx, factory.outside_y + cpos.outside_y-cpos.indicator_dy}, force = factory.force, direction = cpos.direction_out}
+		add_port_markers(factory)
+	else
+		remove_port_markers(factory)
+	end
+end
+
+function remove_port_markers(factory)
+	for _, entity in pairs(factory.outside_port_markers) do entity.destroy() end
+	factory.outside_port_markers = {}
+end
+
+function add_port_markers(factory)
+	for cid, cpos in pairs(factory.layout.connections) do
+		local indicator = Connections.get_port_marker_type(factory, cid)
+		game.print("Indicator is "..indicator)
+		
+		local indicator_direction
+		local indicator_position
+		if indicator == "disconnected" then
+			-- TODO: Something aesthetic for the "disconnected" case
+		elseif indicator == "bidirectional" then
+			-- TODO: Something more aesthetic for the bidirectional-connection
+			-- case than just putting two arrows on top of each other
+			local marker = factory.outside_surface.create_entity {
+				name = "factory-port-marker",
+				position  = {
+					factory.outside_x + cpos.outside_x-cpos.indicator_dx,
+					factory.outside_y + cpos.outside_y-cpos.indicator_dy
+				},
+				force = factory.force,
+				direction = cpos.direction_out
+			}
+			marker.destructible = false
+			marker.operable = false
+			marker.rotatable = false
+			marker.active = false
+			table.insert(factory.outside_port_markers, marker)
+			
+			local marker2 = factory.outside_surface.create_entity {
+				name = "factory-port-marker",
+				position  = {
+					factory.outside_x + cpos.outside_x,
+					factory.outside_y + cpos.outside_y
+				},
+				force = factory.force,
+				direction = cpos.direction_in
+			}
+			marker2.destructible = false
+			marker2.operable = false
+			marker2.rotatable = false
+			marker2.active = false
+			table.insert(factory.outside_port_markers, marker2)
+		elseif indicator == "out" then
+			indicator_direction = cpos.direction_out
+			indicator_position = {
+				factory.outside_x + cpos.outside_x-cpos.indicator_dx,
+				factory.outside_y + cpos.outside_y-cpos.indicator_dy
+			}
+			local marker = factory.outside_surface.create_entity {
+				name = "factory-port-marker",
+				position = indicator_position,
+				force = factory.force,
+				direction = indicator_direction
+			}
+			marker.destructible = false
+			marker.operable = false
+			marker.rotatable = false
+			marker.active = false
+			table.insert(factory.outside_port_markers, marker)
+		else
+			indicator_direction = cpos.direction_in
+			indicator_position = {
+				factory.outside_x + cpos.outside_x,
+				factory.outside_y + cpos.outside_y
+			}
+			local marker = factory.outside_surface.create_entity {
+				name = "factory-port-marker",
+				position = indicator_position,
+				force = factory.force,
+				direction = indicator_direction
+			}
 			marker.destructible = false
 			marker.operable = false
 			marker.rotatable = false
 			marker.active = false
 			table.insert(factory.outside_port_markers, marker)
 		end
-	else
-		for _, entity in pairs(factory.outside_port_markers) do entity.destroy() end
-		factory.outside_port_markers = {}
 	end
 end
 
@@ -882,16 +962,6 @@ local function reconstruct_entity(factory, description, rotation_amount)
 	
 	entity.copy_settings(description.old_entity)
 	return entity
-end
-
-local function string_to_wire_type(str)
-	if str=="red" then
-		return defines.wire_type.red
-	elseif str=="green" then
-		return defines.wire_type.green
-	elseif str=="copper" then
-		return defines.wire_type.copper
-	end
 end
 
 local function can_rotate_factory(factory)

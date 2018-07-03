@@ -643,6 +643,10 @@ local teleport_blacklist = list_to_index({
 	"wall", "gate",
 })
 
+local rotate_factory_blacklist = list_to_index({
+	"straight-rail", "curved-rail", "locomotive"
+})
+
 local function can_teleport(entity_name, proto_name)
 	if HasLayout(entity_name) then return true end
 	
@@ -890,6 +894,28 @@ local function string_to_wire_type(str)
 	end
 end
 
+local function can_rotate_factory(factory)
+	local inside_area = get_factory_inside_area(factory)
+	local inside_entities = factory.inside_surface.find_entities(inside_area)
+
+	for _,entity in ipairs(inside_entities) do
+		if entity.valid then
+			if HasLayout(entity.name) then
+				local subfactory = get_factory_by_building(entity)
+				if not can_rotate_factory(subfactory) then
+					return false
+				end
+			else
+				if rotate_factory_blacklist[entity.prototype.name] then
+					return false
+				end
+			end
+		end
+	end
+
+	return true
+end
+
 local function rotate_factory(factory, rotation_amount)
 	local rotation_8dir = 2*orientation_to_rotation_count(rotation_amount)
 	local inside_area = get_factory_inside_area(factory)
@@ -959,8 +985,6 @@ local function rotate_factory(factory, rotation_amount)
 						if entity.valid and entity.supports_direction then
 							entity.direction = (entity.direction+rotation_8dir) % 8
 						end
-					else
-						game.print("Failed to move entity: "..entity.prototype.type)
 					end
 				end
 			end
@@ -2398,7 +2422,9 @@ script.on_event("factory-rotate", function(event)
 		if factory then
 			-- toggle_port_markers(factory)
 			if player.force == factory.force then
-				rotate_factory(factory, 0.25)
+				if can_rotate_factory(factory) then
+					rotate_factory(factory, 0.25)
+				end
 			else
 				player.print("That building belongs to another team")
 			end
